@@ -5,10 +5,11 @@
 Terrain::Terrain(){
     
     // init grid
-    for(int i = 0; i < 100; i++){
-        for(int j = 0 ; j < 100 ; j++){
+    for(int i = -50; i < 50; i++){
+        for(int j = -50 ; j < 50 ; j++){
             Vertex vertex;
-            vertex.pos = glm::vec3(j / 100.f, 0.0f, (100 - i) / 100.f);
+            vertex.pos = glm::vec3(5 * j / 100.f, 0.0f, 5 * (100 - i) / 100.f);
+            vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
             vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
             vertex.tex_coords = glm::vec2(j / 100.f, i / 100.f);
             vertices.push_back(vertex);
@@ -58,6 +59,12 @@ Terrain::Terrain(){
     glBindVertexArray(0);
 }
 
+void Terrain::apply_noise(){
+    for (auto& vertex : vertices){
+        vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
+        std::cout << vertex.pos.x << std::endl;
+    }
+}
 void Terrain::render(){
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

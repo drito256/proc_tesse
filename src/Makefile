@@ -15,12 +15,12 @@ CXX = g++
 #CXX = clang++
 
 EXE = prog
-SOURCES = shader.cpp main.cpp glad.c transform.cpp camera.cpp terrain.cpp
+SOURCES = shader.cpp main.cpp glad.c transform.cpp camera.cpp terrain.cpp noise.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lglfw -lassimp -ldl
 
-CXXFLAGS = -std=c++11 -I$(IMGUI_DIR)
+CXXFLAGS = -std=c++17 -I$(IMGUI_DIR)
 CXXFLAGS += -g -Wall -Wformat
 LIBS = 
 

@@ -3,9 +3,10 @@
 
 #include "../glm/glm.hpp"
 #include "../glad/glad.h"
+#include "noise.h"
 
 #include <vector>
-
+#include <iostream>
 
 struct Vertex{
     glm::vec3 pos;
@@ -16,7 +17,9 @@ struct Vertex{
 class Terrain{
     public:
         Terrain();
+        void apply_noise();
         void render();
+
 
 
     private:

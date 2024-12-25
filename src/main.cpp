@@ -53,7 +53,7 @@ int main(int argc, char * argv[]) {
 		std::cout << "failed to init glad" << std::endl;
 		return -1;
 	}
-
+    srand(0);
     Terrain terrain;
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
     Camera camera(glm::vec3(0, 1, 1));
@@ -61,7 +61,7 @@ int main(int argc, char * argv[]) {
 
     glClearColor(0.15, 0.1, 0.1, 1);
 	glEnable(GL_DEPTH_TEST);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	while(!glfwWindowShouldClose(window)){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
