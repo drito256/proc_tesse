@@ -15,8 +15,8 @@ class Camera : public Transform{
 		glm::vec3 getUp();
 		float getPitch();
 		float getYaw();
-		Camera(glm::vec3 pos, float yaw,
-		       float pitch);
+		Camera(glm::vec3 pos = glm::vec3(0, 0, 0), float yaw = -90.f,
+		       float pitch = 0.f);
 
 	private:
 		float zoom;

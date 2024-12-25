@@ -1,9 +1,8 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "MyGLM.h"
-//#include "../glm/glm.hpp"
-//#include "../glm/gtc/matrix_transform.hpp"
+#include "../glm/glm.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
 
 
 class Transform{
@@ -28,7 +27,6 @@ class Transform{
 		glm::vec3 right;
 		glm::vec3 scale_factor;
 
-		MyGLM myglm;
 };
 
 #endif

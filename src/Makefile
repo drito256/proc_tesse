@@ -15,7 +15,7 @@ CXX = g++
 #CXX = clang++
 
 EXE = prog
-SOURCES = shader.cpp main.cpp glad.c MyGLM.cpp transform.cpp object.cpp mesh.cpp renderer.cpp camera.cpp
+SOURCES = shader.cpp main.cpp glad.c transform.cpp camera.cpp terrain.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lglfw -lassimp -ldl

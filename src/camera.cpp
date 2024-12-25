@@ -1,8 +1,7 @@
 #include "../include/headers/camera.h"
 #include <iostream>
 
-Camera::Camera(glm::vec3 pos = glm::vec3(0.f, 0.f, 0.f), 
-	       float yaw = -90.f, float pitch = 0.f){
+Camera::Camera(glm::vec3 pos, float yaw, float pitch){
 	this->pos = pos;
 	this->yaw = yaw;
 	this->pitch = pitch;

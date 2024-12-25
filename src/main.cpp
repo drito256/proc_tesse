@@ -1,19 +1,11 @@
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
-
-#include <assimp/Importer.hpp>      
-#include <assimp/scene.h>           
-#include <assimp/postprocess.h> 
-
-//nekima mozda ne radi primjerASSIMP zbog ponovnih definicija stbi funkcija.
-//Jedno od mogucih rjesenja je da se zakomentira linija #define STB_IMAGE_IMPLEMENTATION.
-#define STB_IMAGE_IMPLEMENTATION
-#include "../include/stb/stb_image.h"
-
+#include "../include/headers/terrain.h"
 #include "../include/headers/shader.h"
-#include "../include/headers/renderer.h"
 #include "../include/headers/camera.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "../include/stb/stb_image.h"
 
 // Standard Headers
 #include <iostream>
@@ -62,32 +54,13 @@ int main(int argc, char * argv[]) {
 		return -1;
 	}
 
-	glClearColor(0.15, 0.1, 0.1, 1);
+    Terrain terrain;
+    Shader shader("shaders/shader.vert", "shaders/shader.frag");
+    Camera camera(glm::vec3(0, 1, 1));
+
+
+    glClearColor(0.15, 0.1, 0.1, 1);
 	glEnable(GL_DEPTH_TEST);
-    
-    std::vector<Shader> shaders;
-	Shader shader1("shaders/myshader.vs", "shaders/myshader.fs", "shaders/myshader.gs");
-	Shader shader2("shaders/myshader2.vs", "shaders/myshader2.fs", "shaders/myshader2.gs");
-    shaders.push_back(shader1);
-    shaders.push_back(shader2);
-
-	Camera camera(glm::vec3(0.f,1.f,5.f), -90.f, 0.f);
-
-	//kocka 1
-	Object o("../resources/other/frog.obj");
-	o.scale(glm::vec3(0.55f));	
-
-	Object o2("../resources/other/frog.obj");
-	o2.scale(glm::vec3(0.25f));
-	o2.globalMove(glm::vec3(0.8f,0.8f,0.f));
-
-	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(60.f),
-		       	        	       glm::vec3(1.0f,0.0f,0.0f));
-	o2.rotate(rotationMatrix);
-	Renderer r;
-
-	r.addObject(o);
-	r.addObject(o2);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	while(!glfwWindowShouldClose(window)){
@@ -95,21 +68,11 @@ int main(int argc, char * argv[]) {
 
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
-
-		processInput(window, camera);
-		camera.updateZoom(fov);
-        
-        shader1.use();
-		shader1.setMat4("view", camera.getViewMatrix());
-		shader1.setMat4("projection", camera.getProjectionMatrix());
-        shader1.setVec3("eye", camera.getPosition());
-        shader2.use();
-        shader2.setMat4("view", camera.getViewMatrix());
-		shader2.setMat4("projection", camera.getProjectionMatrix());
-
-        std::vector<Shader> s{shader1,shader2};
-		r.renderScene(s);
-
+        processInput(window, camera);
+        shader.use();            
+        shader.setMat4("view", camera.getViewMatrix());
+        shader.setMat4("projection", camera.getProjectionMatrix());
+        terrain.render();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -138,7 +101,5 @@ void processInput(GLFWwindow *window, Camera& c)
 	    c.updateRotation(0.f, 2.f);
     if(glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
 	    c.updateRotation(0.f ,-2.f);
-
-
 
 }
