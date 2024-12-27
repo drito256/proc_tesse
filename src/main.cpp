@@ -60,8 +60,7 @@ int main(int argc, char * argv[]) {
 
     glClearColor(0.15, 0.1, 0.1, 1);
 	glEnable(GL_DEPTH_TEST);
-//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	while(!glfwWindowShouldClose(window)){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -72,6 +71,7 @@ int main(int argc, char * argv[]) {
         shader.setMat4("view", camera.getViewMatrix());
         shader.setMat4("projection", camera.getProjectionMatrix());
         terrain.render();
+        terrain.update();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

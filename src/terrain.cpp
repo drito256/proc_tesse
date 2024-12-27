@@ -1,26 +1,30 @@
 #include "../include/headers/terrain.h"
+#include <linux/limits.h>
 
 
 
 Terrain::Terrain(){
     
     // init grid
-    for(int i = -50; i < 50; i++){
-        for(int j = -50 ; j < 50 ; j++){
+    for(int i = -100; i < 100; i++){
+        for(int j = -100 ; j < 100 ; j++){
             Vertex vertex;
-            vertex.pos = glm::vec3(5 * j / 100.f, 0.0f, 5 * (100 - i) / 100.f);
+            vertex.pos = glm::vec3(4 * j / 200.f, 0.0f, 4 * (200 - i) / 200.f);
             vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
+            vertex.copy_pos = vertex.pos;
             vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
             vertex.tex_coords = glm::vec2(j / 100.f, i / 100.f);
+            
             vertices.push_back(vertex);
         }
     }
+     
 
-    for(int i = 0; i < 100 - 1; i++){
-        for(int j = 0 ; j < 100 - 1; j++){
-            unsigned int top_left = (i + 1) * 100 + j;
+    for(int i = 0; i < 200 - 1; i++){
+        for(int j = 0 ; j < 200 - 1; j++){
+            unsigned int top_left = (i + 1) * 200 + j;
             unsigned int top_right = top_left + 1;
-            unsigned int bottom_left = (i * 100) + j;
+            unsigned int bottom_left = (i * 200) + j;
             unsigned int bottom_right = bottom_left + 1;
 
             indices.push_back(top_left);
@@ -59,14 +63,26 @@ Terrain::Terrain(){
     glBindVertexArray(0);
 }
 
-void Terrain::apply_noise(){
-    for (auto& vertex : vertices){
-        vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
-        std::cout << vertex.pos.x << std::endl;
-    }
-}
 void Terrain::render(){
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
+
+void Terrain::update(){
+    for(auto& vertex : vertices){
+        vertex.copy_pos.x += 0.01f;
+        vertex.copy_pos.z -= 0.01f;
+        vertex.pos.y = worley_noise(vertex.copy_pos.x, vertex.copy_pos.z);
+    }
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex),
+                 vertices.data(), GL_DYNAMIC_DRAW);
+
+    glBindVertexArray(0);
+}
+
+

@@ -10,6 +10,7 @@
 
 struct Vertex{
     glm::vec3 pos;
+    glm::vec3 copy_pos;
     glm::vec3 normal;
     glm::vec2 tex_coords;
 };
@@ -19,6 +20,7 @@ class Terrain{
         Terrain();
         void apply_noise();
         void render();
+        void update();
 
 
 
