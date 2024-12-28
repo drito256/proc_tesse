@@ -55,11 +55,14 @@ int main(int argc, char * argv[]) {
     srand(0);
     Terrain terrain;
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
-    Camera camera(glm::vec3(0, 1, 1));
+    Camera camera(glm::vec3(-8.51, 6.45, 6.4f), -24.f, 327.f);
 
 
-    glClearColor(0.15, 0.1, 0.1, 1);
+    glClearColor(0.1, 0.1, 0.1, 1);
 	glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	while(!glfwWindowShouldClose(window)){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -70,10 +73,11 @@ int main(int argc, char * argv[]) {
         shader.use();            
         shader.setMat4("view", camera.getViewMatrix());
         shader.setMat4("projection", camera.getProjectionMatrix());
-        terrain.render();
+       	
         terrain.update();
+        terrain.render();
 
-		glfwSwapBuffers(window);
+       	glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	glfwTerminate();

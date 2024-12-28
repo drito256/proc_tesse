@@ -6,10 +6,10 @@
 Terrain::Terrain(){
     
     // init grid
-    for(int i = -50; i < 50; i++){
-        for(int j = -50 ; j < 50 ; j++){
+    for(int i = -100; i < 100; i++){
+        for(int j = -100 ; j < 100 ; j++){
             Vertex vertex;
-            vertex.pos = glm::vec3(4 * j / 100.f, 0.0f, 4 * (100 - i) / 100.f);
+            vertex.pos = glm::vec3(2 * j / 100.f, 0.0f, 2 * (100 - i) / 100.f);
             vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
             vertex.copy_pos = vertex.pos;
             vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -20,11 +20,11 @@ Terrain::Terrain(){
     }
      
 
-    for(int i = 0; i < 100 - 1; i++){
-        for(int j = 0 ; j < 100 - 1; j++){
-            unsigned int top_left = (i + 1) * 100 + j;
+    for(int i = 0; i < 200 - 1; i++){
+        for(int j = 0 ; j < 200 - 1; j++){
+            unsigned int top_left = (i + 1) * 200 + j;
             unsigned int top_right = top_left + 1;
-            unsigned int bottom_left = (i * 100) + j;
+            unsigned int bottom_left = (i * 200) + j;
             unsigned int bottom_right = bottom_left + 1;
 
             indices.push_back(top_left);
@@ -74,8 +74,8 @@ void Terrain::update(){
         vertex.copy_pos.x += 0.02f;
         vertex.copy_pos.z -= 0.02f;
         float dist = worley_noise(vertex.copy_pos.x, vertex.copy_pos.z);
-        vertex.pos.y = pow(dist,1.2f);
-        vertex.pos.y = std::floor(vertex.pos.y * 5) /5;
+        vertex.pos.y = pow(dist, 0.8f);
+        vertex.pos.y = std::floor(vertex.pos.y * 8) / 5;
     }
     
     glBindVertexArray(vao);

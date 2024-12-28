@@ -50,10 +50,9 @@ float worley_noise(float x, float y) {
 
             auto [featureX, featureY] = getFeaturePoint(neighborX, neighborY);
 
-            float distance = minkowskiDistance4(x, y, featureX, featureY);
+            float distance = euclideanDistance(x, y, featureX, featureY);
             minDistance = std::min(minDistance, distance);
         }
     }
-
     return minDistance;
 }

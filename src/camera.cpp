@@ -13,20 +13,17 @@ Camera::Camera(glm::vec3 pos, float yaw, float pitch){
 
 glm::mat4 Camera::getViewMatrix(){
 	return glm::lookAt(this->pos, this->pos + this->front, this->up);
-	//return this->myglm.lookAtMatrix(this->pos, 
-	//				  this->pos + this->front,
-	//				  this->up);
 }
 
 glm::mat4 Camera::getProjectionMatrix(){
 	return glm::perspective(glm::radians(this->zoom),
 		       	1280.f/800.f , 0.1f, 100.f);
-	//return this->myglm.frustum();
 }
 
 void Camera::updatePosition(glm::vec3 pos){
 	this->pos += (pos * this->speed);
-	//std::cout << this->pos.x << " " <<this->pos.y << " " << this->pos.z << std::endl;
+	std::cout << this->pos.x << " " <<this->pos.y << " " << this->pos.z << std::endl;
+    std::cout << this->pitch << " " << this->yaw << std::endl;
 }
 
 void Camera::updateRotation(float pitch, float yaw){
@@ -55,12 +52,11 @@ glm::vec3 Camera::getUp(){
 }
 
 void Camera::updateVectors(){
-	this->front.x =cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+	    this->front.x =cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
         this->front.y =sin(glm::radians(this->pitch));
         this->front.z =sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
         this->front =glm::normalize(this->front);
 
         this->right =glm::normalize(glm::cross(this->front, glm::vec3(0.f,1.f,0.f)));
         this->up = glm::normalize(glm::cross(this->right, this->front));
-	
 }
