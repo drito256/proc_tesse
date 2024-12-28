@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <iostream>
+#include <random>
 
 struct Vertex{
     glm::vec3 pos;

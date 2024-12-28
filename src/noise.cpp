@@ -14,7 +14,7 @@ float chebyshevDistance(float x1, float y1, float x2, float y2) {
     return fmax(fabs(x2 - x1), fabs(y2 - y1));
 }
 float minkowskiDistance4(float x1, float y1, float x2, float y2) {
-    return pow(pow(fabs(x2 - x1), 4) + pow(fabs(y2 - y1), 4), 1/4.f);
+    return pow(pow(fabs(x2 - x1), 3) + pow(fabs(y2 - y1), 3), 1/3.f);
 }
 
 
@@ -41,8 +41,7 @@ std::pair<float, float> getFeaturePoint(int cellX, int cellY) {
 float worley_noise(float x, float y) {
     int cellX = static_cast<int>(std::floor(x));
     int cellY = static_cast<int>(std::floor(y));
-
-    float minDistance = std::numeric_limits<float>::max();
+    float minDistance = 100;
 
     for (int offsetX = -1; offsetX <= 1; ++offsetX) {
         for (int offsetY = -1; offsetY <= 1; ++offsetY) {
@@ -51,7 +50,7 @@ float worley_noise(float x, float y) {
 
             auto [featureX, featureY] = getFeaturePoint(neighborX, neighborY);
 
-            float distance = euclideanDistance(x, y, featureX, featureY);
+            float distance = minkowskiDistance4(x, y, featureX, featureY);
             minDistance = std::min(minDistance, distance);
         }
     }
