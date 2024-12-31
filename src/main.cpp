@@ -14,6 +14,8 @@ int width = 1280;
 int height = 800;
 float fov = 45.f;
 
+int terrain_res = 100;
+
 void processInput(GLFWwindow *window, Camera& c);
 void framebuffer_size_callback(GLFWwindow* window, int w, int h){
 	width = w;
@@ -32,7 +34,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
 int main(int argc, char * argv[]) {
 	GLFWwindow* window;
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -54,7 +56,8 @@ int main(int argc, char * argv[]) {
 	}
     srand(0);
     Terrain terrain;
-    Shader shader("shaders/shader.vert", "shaders/shader.frag");
+    Shader shader("shaders/shader.vert", "shaders/shader.frag"/*, nullptr,
+                  "shaders/shader.tc", "shaders/shader.te"*/);
     Camera camera(glm::vec3(-8.51, 6.45, 6.4f), -24.f, 327.f);
 
 
@@ -63,12 +66,33 @@ int main(int argc, char * argv[]) {
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    bool qPressed =false, ePressed=false;
 	while(!glfwWindowShouldClose(window)){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+        if (!qPressed) { // Key was just pressed
+            terrain_res+=10;
+            terrain.change_res(terrain_res);
+            qPressed = true; // Set to true to prevent multiple reads
+        }
+        } else {
+            qPressed = false; // Reset when the key is released
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+            if (!ePressed) { // Key was just pressed
+                terrain_res-=10;
+                terrain.change_res(terrain_res);
+                ePressed = true; // Set to true to prevent multiple reads
+            }
+        } else {
+            ePressed = false; // Reset when the key is released
+        }
+        
         processInput(window, camera);
         shader.use();            
         shader.setMat4("view", camera.getViewMatrix());
@@ -106,3 +130,4 @@ void processInput(GLFWwindow *window, Camera& c)
 	    c.updateRotation(0.f ,-2.f);
 
 }
+

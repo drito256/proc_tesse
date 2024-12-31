@@ -1,0 +1,15 @@
+#version 410 core
+
+layout(quads, equal_spacing, ccw) in;
+out float height;
+
+void main() {
+    // Interpolate positions of tessellated vertices
+    gl_Position = mix(
+        mix(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_TessCoord.x),
+        mix(gl_in[2].gl_Position, gl_in[3].gl_Position, gl_TessCoord.x),
+        gl_TessCoord.y
+    );    
+    height = 1;
+}
+

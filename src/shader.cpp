@@ -2,19 +2,27 @@
 
     // constructor generates the shader on the fly
     // ------------------------------------------------------------------------
-    Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
+    Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath,
+                   const char* tesseControlPath,  const char* tesseEvalPath)
     {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
         std::string fragmentCode;
         std::string geometryCode;
+        std::string tesseControlCode;
+        std::string tesseEvalCode;
+
         std::ifstream vShaderFile;
         std::ifstream fShaderFile;
         std::ifstream gShaderFile;
+        std::ifstream tCShaderFile;
+        std::ifstream tEShaderFile;
         // ensure ifstream objects can throw exceptions:
         vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         gShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+        tCShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+        tEShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         try 
         {
             // open files
@@ -39,6 +47,23 @@
                 gShaderFile.close();
                 geometryCode = gShaderStream.str();
             }
+            // tesselation shaders
+            if(tesseControlPath != nullptr && tesseEvalPath != nullptr)
+            {
+                tCShaderFile.open(tesseControlPath);
+                std::stringstream gTesseControlStream;
+                gTesseControlStream << tCShaderFile.rdbuf();
+                tCShaderFile.close();
+                tesseControlCode = gTesseControlStream.str();
+
+                tEShaderFile.open(tesseEvalPath);
+                std::stringstream gTesseEvalStream;
+                gTesseEvalStream << tEShaderFile.rdbuf();
+                tEShaderFile.close();
+                tesseEvalCode = gTesseEvalStream.str();
+
+            }
+
         }
         catch (std::ifstream::failure& e)
         {
@@ -70,6 +95,24 @@
             glCompileShader(geometry);
             checkCompileErrors(geometry, "GEOMETRY");
         }
+
+        // if tesse shader is given, compile geometry shader
+        unsigned int tesseControl, tesseEval;
+        if(tesseControlPath != nullptr && tesseEvalPath != nullptr)
+        {
+            const char * tCShaderCode = tesseControlCode.c_str();
+            tesseControl = glCreateShader(GL_TESS_CONTROL_SHADER);
+            glShaderSource(tesseControl, 1, &tCShaderCode, NULL);
+            glCompileShader(tesseControl);
+            checkCompileErrors(tesseControl, "GEOMETRY");
+
+            const char * tEShaderCode = tesseEvalCode.c_str();
+            tesseEval = glCreateShader(GL_TESS_EVALUATION_SHADER);
+            glShaderSource(tesseEval, 1, &tEShaderCode, NULL);
+            glCompileShader(tesseEval);
+            checkCompileErrors(tesseEval, "GEOMETRY");
+        }
+ 
  
 
         // shader Program
@@ -80,6 +123,10 @@
         if(geometryPath != nullptr)
             glAttachShader(ID, geometry);
         
+        if(tesseControlPath != nullptr && tesseEvalPath!=nullptr){
+            glAttachShader(ID, tesseControl);
+            glAttachShader(ID, tesseEval);
+        }
         glLinkProgram(ID);
 
         checkCompileErrors(ID, "PROGRAM");
@@ -88,7 +135,11 @@
         glDeleteShader(fragment);
         if(geometryPath != nullptr)
             glDeleteShader(geometry);
-
+        
+        if(tesseControlPath != nullptr && tesseEvalPath!=nullptr){
+            glDeleteShader(tesseControl);
+            glDeleteShader(tesseEval);
+        }
     }
     // activate the shader
     // ------------------------------------------------------------------------
