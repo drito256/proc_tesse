@@ -4,6 +4,10 @@
 #include "../include/headers/shader.h"
 #include "../include/headers/camera.h"
 
+#include "../include/imgui/imgui.h"
+#include "../include/imgui/imgui_impl_glfw.h"
+#include "../include/imgui/imgui_impl_opengl3.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "../include/stb/stb_image.h"
 
@@ -54,6 +58,13 @@ int main(int argc, char * argv[]) {
 		std::cout << "failed to init glad" << std::endl;
 		return -1;
 	}
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window,true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
     srand(0);
     Terrain terrain;
     Shader shader("shaders/shader.vert", "shaders/shader.frag"/*, nullptr,
@@ -66,16 +77,20 @@ int main(int argc, char * argv[]) {
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     bool qPressed =false, ePressed=false;
 	while(!glfwWindowShouldClose(window)){
+
+         ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
         if (!qPressed) { // Key was just pressed
-            terrain_res+=10;
+            terrain_res+=2;
             terrain.change_res(terrain_res);
             qPressed = true; // Set to true to prevent multiple reads
         }
@@ -85,7 +100,7 @@ int main(int argc, char * argv[]) {
 
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
             if (!ePressed) { // Key was just pressed
-                terrain_res-=10;
+                terrain_res-=2;
                 terrain.change_res(terrain_res);
                 ePressed = true; // Set to true to prevent multiple reads
             }
@@ -101,10 +116,22 @@ int main(int argc, char * argv[]) {
         terrain.update();
         terrain.render();
 
+        ImGui::Begin("Slider");
+        if(ImGui::SliderInt("Tesselation level", &terrain_res, 0.f, 256.f)){
+            terrain.change_res(terrain_res);
+        }            
+        
+        ImGui::End();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
        	glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	glfwTerminate();
+      
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
 	return 0;
 }
