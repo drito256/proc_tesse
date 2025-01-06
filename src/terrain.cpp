@@ -72,8 +72,6 @@ void Terrain::render(){
 void Terrain::change_res(int terrain_res){
 
     Vertex temp = vertices.front();
-    std::cout << temp.copy_pos.x << std::endl;
-    std::cout << temp.copy_pos.z << std::endl;
     // init grid
     vertices.clear();
     indices.clear();
@@ -81,7 +79,7 @@ void Terrain::change_res(int terrain_res){
         for(int j = 0 ; j < terrain_res ; j++){
             Vertex vertex;
             vertex.pos = glm::vec3(4 * static_cast<float>(j) / terrain_res, 0.0f,
-                                   4 *- static_cast<float>(i) / terrain_res);
+                                   4 * static_cast<float>(-i) / terrain_res);
             vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
             vertex.copy_pos = vertex.pos + glm::vec3(temp.copy_pos.x,0,temp.copy_pos.z);
             vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -128,7 +126,7 @@ void Terrain::update(){
 //        vertex.copy_pos.z -= 0.01f;
         float dist = worley_noise(vertex.copy_pos.x, vertex.copy_pos.z);
         vertex.pos.y = pow(dist, 0.8f);
-        vertex.pos.y = std::floor(vertex.pos.y * 8) / 4.5f;
+        vertex.pos.y = floor(vertex.pos.y * 8) / 5.f;
     }
     
     glBindVertexArray(vao);

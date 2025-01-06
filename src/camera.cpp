@@ -22,8 +22,8 @@ glm::mat4 Camera::getProjectionMatrix(){
 
 void Camera::updatePosition(glm::vec3 pos){
 	this->pos += (pos * this->speed);
-	std::cout << this->pos.x << " " <<this->pos.y << " " << this->pos.z << std::endl;
-    std::cout << this->pitch << " " << this->yaw << std::endl;
+//	std::cout << this->pos.x << " " <<this->pos.y << " " << this->pos.z << std::endl;
+ //   std::cout << this->pitch << " " << this->yaw << std::endl;
 }
 
 void Camera::updateRotation(float pitch, float yaw){

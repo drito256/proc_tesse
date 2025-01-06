@@ -7,6 +7,7 @@
 #include "../include/imgui/imgui.h"
 #include "../include/imgui/imgui_impl_glfw.h"
 #include "../include/imgui/imgui_impl_opengl3.h"
+#include <chrono>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../include/stb/stb_image.h"
@@ -21,6 +22,9 @@ float fov = 45.f;
 int terrain_res = 100;
 
 void processInput(GLFWwindow *window, Camera& c);
+void imGuiInit();
+void imGuiDisplay(Terrain *terrain);
+
 void framebuffer_size_callback(GLFWwindow* window, int w, int h){
 	width = w;
 	height = h;
@@ -69,7 +73,7 @@ int main(int argc, char * argv[]) {
     Terrain terrain;
     Shader shader("shaders/shader.vert", "shaders/shader.frag"/*, nullptr,
                   "shaders/shader.tc", "shaders/shader.te"*/);
-    Camera camera(glm::vec3(-8.51, 6.45, 6.4f), -24.f, 327.f);
+    Camera camera(glm::vec3(-4.51, 5.45, 0.4f), -24.f, 327.f);
 
 
     glClearColor(0.1, 0.1, 0.1, 1);
@@ -77,15 +81,18 @@ int main(int argc, char * argv[]) {
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     bool qPressed =false, ePressed=false;
+    auto start = std::chrono::high_resolution_clock::now();
+
 	while(!glfwWindowShouldClose(window)){
 
-         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        imGuiInit();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        
+        auto now = std::chrono::high_resolution_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now-start).count();
+        terrain_res = 102 + sin(elapsed/2000.f)*100;
+        terrain.change_res(terrain_res);
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
@@ -116,15 +123,8 @@ int main(int argc, char * argv[]) {
         terrain.update();
         terrain.render();
 
-        ImGui::Begin("Slider");
-        if(ImGui::SliderInt("Tesselation level", &terrain_res, 0.f, 256.f)){
-            terrain.change_res(terrain_res);
-        }            
-        
-        ImGui::End();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-       	glfwSwapBuffers(window);
+        imGuiDisplay(&terrain);
+        glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	glfwTerminate();
@@ -155,6 +155,35 @@ void processInput(GLFWwindow *window, Camera& c)
 	    c.updateRotation(0.f, 2.f);
     if(glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
 	    c.updateRotation(0.f ,-2.f);
+}
 
+void imGuiInit(){
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+}
+
+void imGuiDisplay(Terrain *terrain){
+        static bool button_status = true;
+        ImGui::Begin("  ");
+        if(ImGui::SmallButton("Wireframe Mode")){
+            button_status = !button_status;
+            if(button_status){
+	            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            else{
+	            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            }
+        }
+        ImGui::End();
+
+        ImGui::Begin(" ");
+        if(ImGui::VSliderInt(" ",ImVec2(20, 500), &terrain_res, 0, 202)){
+            terrain->change_res(terrain_res);
+        }            
+        ImGui::End();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
