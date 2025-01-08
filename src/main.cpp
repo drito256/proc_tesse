@@ -90,8 +90,8 @@ int main(int argc, char * argv[]) {
         
         auto now = std::chrono::high_resolution_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now-start).count();
-        terrain_res = 102 + sin(elapsed/2000.f)*100;
-        terrain.change_res(terrain_res);
+        terrain_res = 102 + sin(elapsed/2000.f)*100; //ovo maknuti
+        terrain.change_res(terrain_res); // ovo maknuti
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
