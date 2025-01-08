@@ -11,19 +11,17 @@ Terrain::Terrain(){
             vertex.pos = glm::vec3(2 * j / 100.f, 0.0f, 2 * (100 - i) / 100.f);
             vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
             vertex.copy_pos = vertex.pos;
-            vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
-            vertex.tex_coords = glm::vec2(j / 100.f, i / 100.f);
             
             vertices.push_back(vertex);
         }
     }
      
 
-    for(int i = 0; i < 200/1 - 1; i++){
-        for(int j = 0 ; j < 200/1 - 1; j++){
-            unsigned int top_left = (i + 1) * 200/1 + j;
+    for(int i = 0; i < 200 - 1; i++){
+        for(int j = 0 ; j < 200 - 1; j++){
+            unsigned int top_left = (i + 1) * 200 + j;
             unsigned int top_right = top_left + 1;
-            unsigned int bottom_left = (i * 200/1) + j;
+            unsigned int bottom_left = (i * 200) + j;
             unsigned int bottom_right = bottom_left + 1;
 
             indices.push_back(top_left);
@@ -53,19 +51,12 @@ Terrain::Terrain(){
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, pos));
 
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tex_coords));
-
     glBindVertexArray(0);
 }
 
 void Terrain::render(){
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    //glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
@@ -82,29 +73,25 @@ void Terrain::change_res(int terrain_res){
                                    4 * static_cast<float>(-i) / terrain_res);
             vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
             vertex.copy_pos = vertex.pos + glm::vec3(temp.copy_pos.x,0,temp.copy_pos.z);
-            vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
-            vertex.tex_coords = glm::vec2(j / 100.f, i / 100.f);
             
             vertices.push_back(vertex);
-        }
-    }
-     
 
-    for(int i = 0; i < terrain_res - 1; i++){
-        for(int j = 0 ; j < terrain_res - 1; j++){
-            unsigned int top_left = (i + 1) * terrain_res + j;
-            unsigned int top_right = top_left + 1;
-            unsigned int bottom_left = (i * terrain_res) + j;
-            unsigned int bottom_right = bottom_left + 1;
+            if(i != terrain_res-1 && j!=terrain_res-1){
+                unsigned int top_left = (i + 1) * terrain_res + j;
+                unsigned int top_right = top_left + 1;
+                unsigned int bottom_left = (i * terrain_res) + j;
+                unsigned int bottom_right = bottom_left + 1;
 
-            indices.push_back(top_left);
-            indices.push_back(bottom_left);
-            indices.push_back(top_right);
+                indices.push_back(top_left);
+                indices.push_back(bottom_left);
+                indices.push_back(top_right);
 
 
-            indices.push_back(top_right);
-            indices.push_back(bottom_left);
-            indices.push_back(bottom_right);
+                indices.push_back(top_right);
+                indices.push_back(bottom_left);
+                indices.push_back(bottom_right);
+
+            }
         }
     }
      

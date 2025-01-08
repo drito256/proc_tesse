@@ -71,8 +71,7 @@ int main(int argc, char * argv[]) {
 
     srand(0);
     Terrain terrain;
-    Shader shader("shaders/shader.vert", "shaders/shader.frag"/*, nullptr,
-                  "shaders/shader.tc", "shaders/shader.te"*/);
+    Shader shader("shaders/shader.vert", "shaders/shader.frag");
     Camera camera(glm::vec3(-4.51, 5.45, 0.4f), -24.f, 327.f);
 
 
@@ -96,23 +95,23 @@ int main(int argc, char * argv[]) {
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-        if (!qPressed) { // Key was just pressed
+        if (!qPressed) {
             terrain_res+=2;
             terrain.change_res(terrain_res);
-            qPressed = true; // Set to true to prevent multiple reads
+            qPressed = true;
         }
         } else {
-            qPressed = false; // Reset when the key is released
+            qPressed = false;
         }
 
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-            if (!ePressed) { // Key was just pressed
+            if (!ePressed) {
                 terrain_res-=2;
                 terrain.change_res(terrain_res);
-                ePressed = true; // Set to true to prevent multiple reads
+                ePressed = true;
             }
         } else {
-            ePressed = false; // Reset when the key is released
+            ePressed = false;
         }
         
         processInput(window, camera);
