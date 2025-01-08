@@ -94,7 +94,8 @@ void Terrain::change_res(int terrain_res){
             }
         }
     }
-     
+
+    
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
