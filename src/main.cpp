@@ -70,7 +70,7 @@ int main(int argc, char * argv[]) {
     ImGui_ImplOpenGL3_Init("#version 330");
 
     srand(0);
-    Terrain terrain;
+    Terrain terrain(100);
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
     Camera camera(glm::vec3(-4.51, 5.45, 0.4f), -24.f, 327.f);
 
@@ -81,17 +81,17 @@ int main(int argc, char * argv[]) {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     bool qPressed =false, ePressed=false;
-    auto start = std::chrono::high_resolution_clock::now();
+//    auto start = std::chrono::high_resolution_clock::now();
 
 	while(!glfwWindowShouldClose(window)){
 
         imGuiInit();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        auto now = std::chrono::high_resolution_clock::now();
+/*        auto now = std::chrono::high_resolution_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now-start).count();
         terrain_res = 102 + sin(elapsed/2000.f)*100; //ovo maknuti
-        terrain.change_res(terrain_res); // ovo maknuti
+        terrain.change_res(terrain_res); // ovo maknuti*/
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {

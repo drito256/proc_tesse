@@ -16,7 +16,7 @@ struct Vertex{
 
 class Terrain{
     public:
-        Terrain();
+        Terrain(int terrain_res);
         void apply_noise();
         void render();
         void update();
