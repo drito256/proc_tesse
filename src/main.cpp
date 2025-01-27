@@ -23,7 +23,7 @@ int terrain_res = 100;
 
 void processInput(GLFWwindow *window, Camera& c);
 void imGuiInit();
-void imGuiDisplay(Terrain *terrain, float *func_mod);
+void imGuiDisplay(Terrain *terrain, float *func_mod, glm::vec3 *bottom_color, glm::vec3 *top_color);
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h){
 	width = w;
@@ -71,7 +71,10 @@ int main(int argc, char * argv[]) {
 
     srand(0);
     Terrain terrain(100);
+
     float func_mod = 5.f;
+    glm::vec3 bottom_color{0}, top_color{0};
+
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
     Camera camera(glm::vec3(-4.51, 5.45, 0.4f), -24.f, 327.f);
 
@@ -119,11 +122,13 @@ int main(int argc, char * argv[]) {
         shader.use();            
         shader.setMat4("view", camera.getViewMatrix());
         shader.setMat4("projection", camera.getProjectionMatrix());
-       	
+        
+        shader.setVec3("bottom_color", bottom_color);
+        shader.setVec3("top_color", top_color);
         terrain.update(func_mod);
         terrain.render();
 
-        imGuiDisplay(&terrain, &func_mod);
+        imGuiDisplay(&terrain, &func_mod, &bottom_color, &top_color);
         glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -163,8 +168,11 @@ void imGuiInit(){
     ImGui::NewFrame();
 }
 
-void imGuiDisplay(Terrain *terrain, float *func_mod){
+void imGuiDisplay(Terrain *terrain, float *func_mod, glm::vec3 *bottom_color, glm::vec3 *top_color){
         static bool button_status = true;
+
+        float* bottom_ptr = glm::value_ptr(*bottom_color);
+        float* top_ptr = glm::value_ptr(*top_color);
         ImGui::Begin("  ");
         if(ImGui::SmallButton("Wireframe Mode")){
             button_status = !button_status;
@@ -177,6 +185,9 @@ void imGuiDisplay(Terrain *terrain, float *func_mod){
         }
         ImGui::NewLine();
         ImGui::SliderFloat("Modify", func_mod, 2, 20);
+        ImGui::ColorEdit3("Bottom color", bottom_ptr);
+        ImGui::ColorEdit3("Top color", top_ptr);
+
         ImGui::End();
 
         ImGui::Begin(" ");
