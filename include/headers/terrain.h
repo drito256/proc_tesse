@@ -19,7 +19,7 @@ class Terrain{
         Terrain(int terrain_res);
         void apply_noise();
         void render();
-        void update();
+        void update(float function_modificator);
         void change_res(int terrain_res);
 
     private:

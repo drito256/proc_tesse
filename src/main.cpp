@@ -23,7 +23,7 @@ int terrain_res = 100;
 
 void processInput(GLFWwindow *window, Camera& c);
 void imGuiInit();
-void imGuiDisplay(Terrain *terrain);
+void imGuiDisplay(Terrain *terrain, float *func_mod);
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h){
 	width = w;
@@ -71,6 +71,7 @@ int main(int argc, char * argv[]) {
 
     srand(0);
     Terrain terrain(100);
+    float func_mod = 5.f;
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
     Camera camera(glm::vec3(-4.51, 5.45, 0.4f), -24.f, 327.f);
 
@@ -119,10 +120,10 @@ int main(int argc, char * argv[]) {
         shader.setMat4("view", camera.getViewMatrix());
         shader.setMat4("projection", camera.getProjectionMatrix());
        	
-        terrain.update();
+        terrain.update(func_mod);
         terrain.render();
 
-        imGuiDisplay(&terrain);
+        imGuiDisplay(&terrain, &func_mod);
         glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -162,7 +163,7 @@ void imGuiInit(){
     ImGui::NewFrame();
 }
 
-void imGuiDisplay(Terrain *terrain){
+void imGuiDisplay(Terrain *terrain, float *func_mod){
         static bool button_status = true;
         ImGui::Begin("  ");
         if(ImGui::SmallButton("Wireframe Mode")){
@@ -174,6 +175,8 @@ void imGuiDisplay(Terrain *terrain){
 	            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             }
         }
+        ImGui::NewLine();
+        ImGui::SliderFloat("Modify", func_mod, 2, 20);
         ImGui::End();
 
         ImGui::Begin(" ");
