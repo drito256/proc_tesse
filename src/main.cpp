@@ -20,6 +20,7 @@ int height = 800;
 float fov = 45.f;
 
 int terrain_res = 100;
+int dist_function = 1;
 
 void processInput(GLFWwindow *window, Camera& c);
 void imGuiInit();
@@ -70,7 +71,7 @@ int main(int argc, char * argv[]) {
     ImGui_ImplOpenGL3_Init("#version 330");
 
     srand(0);
-    Terrain terrain(100);
+    Terrain terrain(100, dist_function);
 
     float func_mod = 5.f;
     glm::vec3 bottom_color{0}, top_color{0};
@@ -101,7 +102,7 @@ int main(int argc, char * argv[]) {
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
         if (!qPressed) {
             terrain_res+=2;
-            terrain.change_res(terrain_res);
+            terrain.change_res(terrain_res, dist_function);
             qPressed = true;
         }
         } else {
@@ -111,7 +112,7 @@ int main(int argc, char * argv[]) {
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
             if (!ePressed) {
                 terrain_res-=2;
-                terrain.change_res(terrain_res);
+                terrain.change_res(terrain_res, dist_function);
                 ePressed = true;
             }
         } else {
@@ -125,7 +126,7 @@ int main(int argc, char * argv[]) {
         
         shader.setVec3("bottom_color", bottom_color);
         shader.setVec3("top_color", top_color);
-        terrain.update(func_mod);
+        terrain.update(func_mod, dist_function);
         terrain.render();
 
         imGuiDisplay(&terrain, &func_mod, &bottom_color, &top_color);
@@ -170,7 +171,6 @@ void imGuiInit(){
 
 void imGuiDisplay(Terrain *terrain, float *func_mod, glm::vec3 *bottom_color, glm::vec3 *top_color){
         static bool button_status = true;
-
         float* bottom_ptr = glm::value_ptr(*bottom_color);
         float* top_ptr = glm::value_ptr(*top_color);
         ImGui::Begin("  ");
@@ -187,12 +187,23 @@ void imGuiDisplay(Terrain *terrain, float *func_mod, glm::vec3 *bottom_color, gl
         ImGui::SliderFloat("Modify", func_mod, 2, 20);
         ImGui::ColorEdit3("Bottom color", bottom_ptr);
         ImGui::ColorEdit3("Top color", top_ptr);
+        
+        if(ImGui::RadioButton("Euclidean", dist_function == 1))
+            dist_function = 1;
+        if(ImGui::RadioButton("Manhattan", dist_function == 2))
+            dist_function = 2;
+        if(ImGui::RadioButton("Chebyshev", dist_function == 3))
+            dist_function = 3;
+        if(ImGui::RadioButton("Minkwoski", dist_function == 4))
+            dist_function = 4;
+
+
 
         ImGui::End();
 
         ImGui::Begin(" ");
         if(ImGui::VSliderInt(" ",ImVec2(20, 500), &terrain_res, 0, 202)){
-            terrain->change_res(terrain_res);
+            terrain->change_res(terrain_res, dist_function);
         }            
         ImGui::End();
 

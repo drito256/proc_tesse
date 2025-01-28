@@ -13,7 +13,7 @@ float manhattanDistance(float x1, float y1, float x2, float y2) {
 float chebyshevDistance(float x1, float y1, float x2, float y2) {
     return fmax(fabs(x2 - x1), fabs(y2 - y1));
 }
-float minkowskiDistance4(float x1, float y1, float x2, float y2) {
+float minkowskiDistance(float x1, float y1, float x2, float y2) {
     return pow(pow(fabs(x2 - x1), 3) + pow(fabs(y2 - y1), 3), 1/3.f);
 }
 
@@ -38,7 +38,7 @@ std::pair<float, float> getFeaturePoint(int cellX, int cellY) {
 }
 
 // Worley noise function
-float worley_noise(float x, float y) {
+float worley_noise(float x, float y, int dist_function) { // dist_function [1,4]
     int cellX = static_cast<int>(std::floor(x));
     int cellY = static_cast<int>(std::floor(y));
     float minDistance = 100;
@@ -49,8 +49,25 @@ float worley_noise(float x, float y) {
             int neighborY = cellY + offsetY;
 
             auto [featureX, featureY] = getFeaturePoint(neighborX, neighborY);
+           
+            float distance;
+            switch(dist_function){
+                case 1:
+                distance = euclideanDistance(x, y, featureX, featureY);
+                break;
+                case 2:
+                distance = manhattanDistance(x, y, featureX, featureY);
+                break;
+                case 3:
+                distance = chebyshevDistance(x, y, featureX, featureY);
+                break;
+                case 4:
+                distance = minkowskiDistance(x, y, featureX, featureY);
+                break;
 
-            float distance = euclideanDistance(x, y, featureX, featureY);
+                default:
+                distance = euclideanDistance(x, y, featureX, featureY);
+            };
             minDistance = std::min(minDistance, distance);
         }
     }

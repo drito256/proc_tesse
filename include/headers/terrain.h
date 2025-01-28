@@ -17,11 +17,11 @@ struct Vertex{
 
 class Terrain{
     public:
-        Terrain(int terrain_res);
+        Terrain(int terrain_res, int dist_function);
         void apply_noise();
         void render();
-        void update(float function_modificator);
-        void change_res(int terrain_res);
+        void update(float function_modificator, int dist_function);
+        void change_res(int terrain_res, int dist_function);
 
     private:
         std::vector<Vertex> vertices;

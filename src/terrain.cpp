@@ -2,13 +2,13 @@
 #include <linux/limits.h>
 
 
-Terrain::Terrain(int terrain_res){
+Terrain::Terrain(int terrain_res, int dist_function){
     for(int i = 0; i < terrain_res; i++){
         for(int j = 0 ; j < terrain_res ; j++){
             Vertex vertex;
             vertex.pos = glm::vec3(4 * static_cast<float>(j) / terrain_res, 0.0f,
                                    4 * static_cast<float>(-i) / terrain_res);
-            vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
+            vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z, dist_function);
             vertex.copy_pos = vertex.pos;
             
             vertices.push_back(vertex);
@@ -59,7 +59,7 @@ void Terrain::render(){
     glBindVertexArray(0);
 }
 
-void Terrain::change_res(int terrain_res){
+void Terrain::change_res(int terrain_res, int dist_function){
 
     Vertex temp = vertices.front();
     // init grid
@@ -70,7 +70,7 @@ void Terrain::change_res(int terrain_res){
             Vertex vertex;
             vertex.pos = glm::vec3(4 * static_cast<float>(j) / terrain_res, 0.0f,
                                    4 * static_cast<float>(-i) / terrain_res);
-            vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z);
+            vertex.pos.y = worley_noise(vertex.pos.x, vertex.pos.z, dist_function);
             vertex.copy_pos = vertex.pos + glm::vec3(temp.copy_pos.x,0,temp.copy_pos.z);
             
             vertices.push_back(vertex);
@@ -107,11 +107,11 @@ void Terrain::change_res(int terrain_res){
 
 }
 
-void Terrain::update(float function_modificator){
+void Terrain::update(float function_modificator, int dist_function){
     for(auto& vertex : vertices){
         vertex.copy_pos.x += 0.02f;
 //        vertex.copy_pos.z -= 0.01f;
-        float dist = worley_noise(vertex.copy_pos.x, vertex.copy_pos.z);
+        float dist = worley_noise(vertex.copy_pos.x, vertex.copy_pos.z, dist_function);
         vertex.pos.y = pow(dist, 0.6f);
         vertex.pos.y = floor(dist * function_modificator) / 5.f;
     }

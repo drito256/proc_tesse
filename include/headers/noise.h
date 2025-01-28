@@ -9,7 +9,7 @@
 float random_float();
 float euclidian_dist(float x1, float y1, float x2, float y2);
 
-float worley_noise(float x, float y);
+float worley_noise(float x, float y, int dist_function);
 
 
 #endif
