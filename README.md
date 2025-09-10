@@ -1,6 +1,17 @@
-# Adaptive tesselation of procedurally generated terrains
+# Tesselation of procedurally generated terrains
 
-Demo using worley noise
 
-https://github.com/user-attachments/assets/3fa215e2-7b89-46b2-9420-69acd30188db
+## Building on Linux: ##
 
+Before running the application you will need following packages:
+
+```
+build-essential mesa mesa-dev mesa-common-dev mesa-utils glfw-x11 glm
+```
+To compile it simply use:
+```make```
+in 
+```/src``` folder
+
+And finally to execute the application use:
+```./demo```
