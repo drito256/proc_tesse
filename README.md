@@ -1,5 +1,8 @@
 # Tesselation of procedurally generated terrains
 
+<img src="resources/sc1.png" alt="Lorenz" width="1000">
+<img src="resources/sc2.png" alt="Lorenz" width="1000">
+<img src="resources/sc3.png" alt="Lorenz" width="1000">
 
 ## Building on Linux: ##
 
